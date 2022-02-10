@@ -11,7 +11,7 @@ io.on('connection', socket => {
     socket.on('joinRoom', (data) => {
         socket.join(data.room)
         socket.broadcast.to(data.room).emit('joinRoom', data) //emit to everyone but the user
-
+        console.log(`user joinRoom ${JSON.stringify({ socketid: socket.id, data })}`);
     })
 
     socket.on('leaveRoom', (data) => {
@@ -20,14 +20,15 @@ io.on('connection', socket => {
             const room = rooms[i];
             socket.broadcast.to(room).emit('leaveRoom', data)
         }
+        console.log(`user leaveRoom ${JSON.stringify({ socketid: socket.id, data })}`);
         // io.emit('message',JSON.stringify({message})) // emit to everyone
         // socket.emit('message',JSON.stringify({message})) // emit to the user connect
         // socket.broadcast.emit('message',JSON.stringify({message})) //emit to everyone but the user
     })
 
-    // socket.on("disconnect", (reason) => {
-    //     console.log(reason);
-    // });
+    socket.on("disconnect", (reason) => {
+        console.log(`user disconnected ${JSON.stringify({ socketid: socket.id, reason })}`);
+    });
 })
 
 http.listen(process.env.PORT || 5000, () => console.log('server running'))

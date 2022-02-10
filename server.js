@@ -10,7 +10,7 @@ io.on('connection', socket => {
 
     socket.on('joinRoom', (data) => {
         socket.join(data.room)
-        socket.broadcast.to(room).emit('joinRoom', data) //emit to everyone but the user
+        socket.broadcast.to(data.room).emit('joinRoom', data) //emit to everyone but the user
 
     })
 

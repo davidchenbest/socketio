@@ -12,6 +12,11 @@ io.on('connection', socket => {
         socket.join(data.room)
         socket.broadcast.to(data.room).emit('joinRoom', data) //emit to everyone but the user
         console.log(`user joinRoom ${JSON.stringify({ socketid: socket.id, data })}`);
+
+        socket.on("disconnect", (reason) => {
+            console.log(`user disconnected ${JSON.stringify({ socketid: socket.id, reason, data })}`);
+            socket.broadcast.to(data.room).emit('leaveRoom', data)
+        });
     })
 
     socket.on('leaveRoom', (data) => {
@@ -26,9 +31,6 @@ io.on('connection', socket => {
         // socket.broadcast.emit('message',JSON.stringify({message})) //emit to everyone but the user
     })
 
-    socket.on("disconnect", (reason) => {
-        console.log(`user disconnected ${JSON.stringify({ socketid: socket.id, reason })}`);
-    });
 })
 
 http.listen(process.env.PORT || 5000, () => console.log('server running'))
